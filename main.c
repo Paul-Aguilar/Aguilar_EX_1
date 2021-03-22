@@ -22,7 +22,7 @@ void change_color_white(int counter);		//For switch 3
 void (*ptr_funcion[2])(int)={change_color_sw2, change_color_white};
 
 #define SYSTEM_CLOCK_LED (21000000U)
-#define DELAY_LED (100000)
+#define DELAY_LED (1)
 
 uint16_t counter_for_case = 0;
 
@@ -40,7 +40,7 @@ int main(void) {
 
 	NVIC_set_basepri_threshold(PRIORITY_10);
 	NVIC_enable_interrupt_and_priotity(PORTC_IRQ, PRIORITY_6);
-	NVIC_enable_interrupt_and_priotity(PORTA_IRQ, PRIORITY_8);
+	NVIC_enable_interrupt_and_priotity(PORTA_IRQ, PRIORITY_6);
 
 	GPIO_callback_init(GPIO_A,case_value(value));
 
@@ -49,6 +49,7 @@ int main(void) {
 		{
 				if(FALSE == sw_state(SW2))
 				{
+					//hasta que se presione sw2 se empezara esta secuencia
 					RGB_color_on(RGB_WHITE);
 					PIT_delay(PIT_0,SYSTEM_CLOCK_LED, DELAY_LED);
 					RGB_color_off(RGB_WHITE);
@@ -65,26 +66,40 @@ int main(void) {
 							RGB_color_off(RGB_WHITE);
 
 
+							//en estos delays se debe de hacer interrupciones que afectaran el valor de value y decidiran en el switch
+							PIT_delay(PIT_0,SYSTEM_CLOCK_LED, DELAY_LED); //5 delays para 5sg de lectura de itnerurpcion
+							PIT_delay(PIT_0,SYSTEM_CLOCK_LED, DELAY_LED);
+							PIT_delay(PIT_0,SYSTEM_CLOCK_LED, DELAY_LED);
+							PIT_delay(PIT_0,SYSTEM_CLOCK_LED, DELAY_LED);
+							PIT_delay(PIT_0,SYSTEM_CLOCK_LED, DELAY_LED);
+
+
+							//el valor de la interrupcion es usado para el switch
 							switch(value)
 							{
 							case(1):
-								RGB_color_off(RGB_BLUE);
-
+								RGB_color_off(RGB_WHITE);
+								RGB_color_on(RGB_BLUE);
 							break;
 							case(2):
-								RGB_color_off(RGB_GREEN);
+								RGB_color_off(RGB_WHITE);
+								RGB_color_on(RGB_GREEN);
 							break;
 							case(3):
-								RGB_color_off(RGB_RED);
+								RGB_color_off(RGB_WHITE);
+								RGB_color_on(RGB_RED);
 							break;
 							case(4):
-								RGB_color_off(RGB_YELLOW);
+								RGB_color_off(RGB_WHITE);
+								RGB_color_on(RGB_YELLOW);
 							break;
 							case(5):
-								RGB_color_off(RGB_PURPLE);
+								RGB_color_off(RGB_WHITE);
+								RGB_color_on(RGB_PURPLE);
 							break;
 							case(6):
-								RGB_color_off(RGB_CYAN);
+								RGB_color_off(RGB_WHITE);
+								RGB_color_on(RGB_CYAN);
 							break;
 							}
 
@@ -93,11 +108,10 @@ int main(void) {
 				}
 		}
 
-
     return 0 ;
 }
 
-void case_value (value)
+void case_value (int value)
 {
 	if(FALSE == sw_state(SW3))
 	{
