@@ -18,7 +18,7 @@ uint8_t interrupt_flag = 0x00;
 void PIT_delay(PIT_timer_t pit_timer, My_float_pit_t system_clock , My_float_pit_t delay)
 {
 
-		My_float_pit_t timer_start_value = (uint32_t)((system_clock/2) * delay);
+		My_float_pit_t timer_start_value = (uint32_t)((system_clock) * delay);
 		//LOADS TIMER START VALUE
 		PIT->CHANNEL[pit_timer].LDVAL = timer_start_value;
 		//ENABLES PIT INTERRUPTION

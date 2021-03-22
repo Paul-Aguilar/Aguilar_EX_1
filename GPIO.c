@@ -13,6 +13,15 @@
 #include "GPIO.h"
 #include "Bits.h"
 
+static void (*gpio_callback_A)(void) = 0;
+void PORTA_IRQHandler(void)
+{
+	if(gpio_callback_A)
+	{
+		gpio_callback_A();
+	}
+	GPIO_clear_interrupt(GPIO_A);
+}
 
 uint8_t GPIO_clock_gating(gpio_port_name_t port_name)
 {
@@ -301,6 +310,24 @@ void GPIO_data_direction_pin(gpio_port_name_t port_name, uint8_t state, uint8_t 
 }
 
 
+void GPIO_callback_init(gpio_port_name_t port_name, void(*handler)(void))
+{
+	switch(port_name)
+		{
+		case GPIO_A:
+			gpio_callback_A = handler;
+			break;
+
+		}
+}
 
 
-
+void GPIO_clear_interrupt(gpio_port_name_t port_name)   //Funcion para limpiar los flags de los callbacks
+{
+	switch(port_name)
+	{
+	case GPIO_A:
+		PORTA->ISFR = 0xFFFFFFFF;
+		break;
+	}
+}

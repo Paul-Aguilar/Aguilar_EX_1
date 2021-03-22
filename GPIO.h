@@ -211,4 +211,8 @@ void GPIO_clear_pin(gpio_port_name_t port_name, uint8_t pin);
  */
 void GPIO_toogle_pin(gpio_port_name_t port_name, uint8_t pin);
 
+void GPIO_callback_init(gpio_port_name_t port_name, void(*handler)(void));
+void GPIO_clear_interrupt(gpio_port_name_t port_name);
+
+void PORTA_IRQHandler(void);
 #endif /* GPIO_H_ */
